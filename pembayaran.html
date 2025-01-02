@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran</title>
+    <link rel="stylesheet" href="pembayaran.css">
+</head>
+<body>
+    <form id="payment-form" action="riwayat.html" method="POST">
+        <div class="form-group">
+            <label for="method">Pilih Metode Pembayaran:</label>
+            <select id="method" name="method" onchange="togglePaymentDetails()" required>
+                <option value="">-- Pilih Metode --</option>
+                <option value="cod">Cash on Delivery (COD)</option>
+                <option value="debit">Debit Card</option>
+            </select>
+        </div>
+    
+        <!-- Detail Alamat untuk COD -->
+        <div id="cod-details" class="payment-details hidden">
+            <h3>Detail Alamat Pengiriman</h3>
+            <label for="address">Alamat Lengkap:</label>
+            <textarea id="address" name="address" placeholder="Masukkan alamat lengkap Anda"></textarea>
+        </div>
+    
+        <!-- Detail Debit Card -->
+        <div id="debit-details" class="payment-details hidden">
+            <h3>Detail Kartu Debit</h3>
+            <label for="card-name">Nama pada Kartu:</label>
+            <input type="text" id="card-name" name="card_name" placeholder="Masukkan nama Anda">
+    
+            <label for="card-number">Nomor Kartu:</label>
+            <input type="text" id="card-number" name="card_number" placeholder="Masukkan nomor kartu debit Anda">
+    
+            <label for="expiry">Tanggal Kedaluwarsa:</label>
+            <input type="text" id="expiry" name="expiry" placeholder="MM/YY">
+    
+            <label for="alamat">Alamat:</label>
+            <input type="text" id="alamat" name="alamat" placeholder="Masukkan alamat">
+        </div>
+    
+        <p>Total yang harus dibayar: <span class="total-display">Rp 0</span></p>
+        <input type="hidden" id="cart-total-hidden" name="total">
+    
+        <button type="submit">Beli Sekarang</button>
+    </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ambil total dari URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const total = urlParams.get('total');
+            
+            if (total) {
+                document.getElementById('cart-total-hidden').value = total;
+                document.querySelector('.total-display').innerText = `Rp ${total}`;
+            }
+
+            // Tambahkan event listener untuk menyimpan data
+            const form = document.getElementById('payment-form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const paymentMethod = document.getElementById('method').value;
+                const address = paymentMethod === 'cod'
+                    ? document.getElementById('address').value
+                    : document.getElementById('alamat').value;
+                const total = document.getElementById('cart-total-hidden').value;
+
+                if (!paymentMethod || !address || !total) {
+                    alert('Harap lengkapi semua data!');
+                    return;
+                }
+
+                const date = new Date().toLocaleString();
+                addPurchaseToHistory(date, paymentMethod, address, total);
+
+                alert('Pembayaran berhasil! Anda akan diarahkan ke riwayat belanja.');
+                window.location.href = 'riwayat.html';
+            });
+        });
+
+        function addPurchaseToHistory(date, method, address, total) {
+            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            purchaseHistory.push({ date, method, address, total });
+            localStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+        }
+
+        function togglePaymentDetails() {
+            const method = document.getElementById('method').value;
+            document.getElementById('cod-details').classList.add('hidden');
+            document.getElementById('debit-details').classList.add('hidden');
+
+            if (method === 'cod') {
+                document.getElementById('cod-details').classList.remove('hidden');
+            } else if (method === 'debit') {
+                document.getElementById('debit-details').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

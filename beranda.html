@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Toko Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+        <!-- Header dengan logo dan navigasi -->
+    <header>
+        <div class="logo">
+            <img src="assets/keranjang.jpeg" alt="Logo Toko Online" width="100">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="langkahlangkah.html">Beranda</a></li>
+                <li><a href="#products">Produk</a></li>
+                <li><a href="#contact">Kontak</a></li>
+                <li><a href="riwayat.html">Riwayat</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="index.html">logout</a></li>
+                <div class="cart-icon" onclick="toggleCart()">
+                    <img src="assets/keranjang.jpeg" alt="Keranjang" width="50" height="50">
+                    <span id="cart-count">0</span>
+                </div>
+            </ul>
+        </nav>
+    </header>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div id="cart-popup" class="cart-popup">
+    <div class="cart-popup-content">
+        <span class="close-btn" onclick="toggleCart()">×</span>
+        <h2>Keranjang Belanja</h2>
+        <ul id="cart-items"></ul>
+        <p>Total: Rp <span id="cart-total">0</span></p>
+
+        <!-- Tambahkan tautan ke halaman pembayaran -->
+        <a id="checkout-link" href="#" class="checkout-btn">Checkout</a>
+    </div>
+</div>
+
+
+    <div id="home" class="home-section">
+        <h1>Selamat Datang di Toko Online Kami!</h1>
+        <p>Temukan berbagai produk menarik dan beli dengan mudah.</p>
+    </div>
+
+    <div id="products" class="product-container">
+        <h2>Produk Terbaru</h2>
+        <div class="products">
+            <div class="product-card">
+                <img src="assets\1.jpg" alt="Produk 1">
+                <h3>Produk 1</h3>
+                <p>Rp 194.750</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets\4.jpg" alt="Produk 2">
+                <h3>Produk 2</h3>
+                <p>Rp 130.150</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets\3.jpg" alt="Produk 3">
+                <h3>Produk 3</h3>
+                <p>Rp 185.250</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets\5.jpg" alt="Produk 1">
+                <h3>Produk 4</h3>
+                <p>Rp 44.999</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets\2.jpg" alt="Produk 2">
+                <h3>Produk 5</h3>
+                <p>Rp 160.550</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets\6.jpg" alt="Produk 3">
+                <h3>Produk 6</h3>
+                <p>Rp 97.000</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets/7.jpg" alt="Produk 1">
+                <h3>Produk 7</h3>
+                <p>Rp 54.820</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets/8.jpg" alt="Produk 2">
+                <h3>Produk 8</h3>
+                <p>Rp 48.000</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets/9.jpg" alt="Produk 3">
+                <h3>Produk 9</h3>
+                <p>Rp 50.000</p>
+                <button>Beli Sekarang</button>
+            </div>
+            <div class="product-card">
+                <img src="assets/10.jpg" alt="Produk 1">
+                <h3>Produk 10</h3>
+                <p>Rp 62.000</p>
+                <button>Beli Sekarang</button>
+            </div>
+        </div>
+    </div>
+    <div id="contact" class="contact-section">
+        <h2>Kontak Kami</h2>
+        <p>Email: info@tokoonline.com</p>
+        <p>Telepon: 08123456789</p>
+    </div>
+
+        <script>
+
+document.getElementById('checkout-link').addEventListener('click', function (e) {
+    e.preventDefault(); // Mencegah pengalihan default
+    const cartTotal = document.getElementById('cart-total').innerText;
+
+    // Redirect ke pembayaran.html dengan total belanja
+    window.location.href = `pembayaran.html?total=${encodeURIComponent(cartTotal)}`;
+});
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.product-card button');
+        let cart = [];
+        let cartCount = 0;
+    
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productCard = this.parentElement;
+                const productName = productCard.querySelector('h3').innerText;
+                const price = parseInt(productCard.querySelector('p').innerText.replace('Rp ', '').replace('.', ''));
+    
+                // Tambah produk ke keranjang
+                cart.push({ name: productName, price: price });
+                cartCount += 1;
+                document.getElementById('cart-count').innerText = cartCount;
+                updateCartPopup();
+            });
+        });
+        // Fungsi untuk menampilkan isi keranjang
+        function updateCartPopup() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalContainer = document.getElementById('cart-total');
+            cartItemsContainer.innerHTML = ''; // Kosongkan isi keranjang sebelumnya
+            let total = 0;
+    
+            cart.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerText = `${item.name} - Rp ${item.price}`;
+                cartItemsContainer.appendChild(listItem);
+                total += item.price;
+            });
+    
+            cartTotalContainer.innerText = total;
+        }
+    
+        // Fungsi untuk menampilkan/menghilangkan pop-up keranjang
+        window.toggleCart = function() {
+            const cartPopup = document.getElementById('cart-popup');
+            cartPopup.style.display = cartPopup.style.display === 'block' ? 'none' : 'block';
+        };
+    
+        // Fungsi checkout (simulasi)
+        window.checkout = function() {
+            alert('Checkout berhasil!');
+            cart = []; // Kosongkan keranjang setelah checkout
+            cartCount = 0;
+            document.getElementById('cart-count').innerText = cartCount;
+            updateCartPopup();
+            toggleCart(); // Tutup pop-up
+        };
+    });
+</script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.product-card button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productCard = this.parentElement;
+                    const productName = productCard.querySelector('h3').innerText;
+                    const price = productCard.querySelector('p').innerText.replace('Rp ', '').replace('.', '');
+        
+                    // Kirim data ke order.php
+                    fetch('order.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `product_name=${productName}&price=${price}`
+                    })
+                    .then(response => response.text())
+                    .then(data => alert(data))
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+        </script>
+
+        
+</body>
+</html>
